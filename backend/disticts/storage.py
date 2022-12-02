@@ -3,7 +3,7 @@ from backend.database import db_session
 from backend.models import District
 
 
-class Storage():
+class WebStorage():
     def add(self, district: DistrictSchema) -> DistrictSchema:
         entity = District(name=district)
 
