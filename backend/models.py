@@ -35,6 +35,7 @@ class Siren(Base):
     geo = Column(String)
     comment = Column(String)
     photo = Column(String)
+    disabled = Column(Integer)
 
 
 if __name__ == '__main__':

@@ -18,3 +18,4 @@ class Siren(BaseModel):
     geo: str | None
     comment: str | None
     photo: str | None
+    disabled: int | None
