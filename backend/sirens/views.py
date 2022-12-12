@@ -2,6 +2,7 @@ from flask import Blueprint, request
 
 from backend.sirens.storage import WebStorage
 from backend.sirens.schemas import Siren
+from backend.errors import AppError
 
 
 siren_view = Blueprint('sirens', __name__)
@@ -14,7 +15,7 @@ def add():
     payload = request.json
 
     if not payload:
-        """здесь будет raise ошибки"""
+        raise AppError('empty payload')
 
     payload['uid'] = -1
 
@@ -36,7 +37,7 @@ def update_by_id(uid):
     payload = request.json
 
     if not payload:
-        """здесь будет raise ошибки"""
+        raise AppError('empty payload')
 
     payload['uid'] = uid
     siren = Siren(**payload)
@@ -57,7 +58,7 @@ def get_by_name(name=''):
     if 'name ' in request.args:
         name = request.args.get('name')
         sirens = storage.get_by_name(name)
-
-    """нужен raise ошибки"""
+    else:
+        sirens = []
 
     return [siren.dict() for siren in sirens], 200

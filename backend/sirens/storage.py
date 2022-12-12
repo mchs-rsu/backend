@@ -1,6 +1,8 @@
 from backend.models import Siren, District
 from backend.database import db_session
 from backend.sirens.schemas import Siren as SirenSchema
+from backend.errors import ConflictError, NotFoundError
+
 from sqlalchemy.exc import IntegrityError
 
 
@@ -34,6 +36,7 @@ class WebStorage():
             raise ConflictError(self.name)
 
         return SirenSchema(
+                uid=entity.uid,
                 name=entity.name,
                 district_id=entity.district_id,
                 type=entity.type,
@@ -57,7 +60,7 @@ class WebStorage():
         entity = Siren.query.get(uid)
 
         if not entity:
-            """Здесь будет raise ошибки not found"""
+            raise NotFoundError(self.name, uid)
 
         entity.name=siren.name
         entity.district_id=siren.district_id
@@ -79,22 +82,23 @@ class WebStorage():
         db_session.commit()
 
         return SirenSchema(
-            name=siren.name,
-            district_id=siren.district_id,
-            type=siren.type,
-            own=siren.own,
-            engineer=siren.engineer,
-            date=siren.date,
-            condition=siren.condition,
-            ident=siren.ident,
-            ip=siren.ip,
-            mask=siren.mask,
-            gateway=siren.gateway,
-            adress=siren.adress,
-            geo=siren.geo,
-            comment=siren.comment,
-            photo=siren.photo,
-            disabled=siren.disabled,
+            uid=entity.uid,
+            name=entity.name,
+            district_id=entity.district_id,
+            type=entity.type,
+            own=entity.own,
+            engineer=entity.engineer,
+            date=entity.date,
+            condition=entity.condition,
+            ident=entity.ident,
+            ip=entity.ip,
+            mask=entity.mask,
+            gateway=entity.gateway,
+            adress=entity.adress,
+            geo=entity.geo,
+            comment=entity.comment,
+            photo=entity.photo,
+            disabled=entity.disabled,
         )
 
 
@@ -102,7 +106,7 @@ class WebStorage():
         entity = Siren.query.get(uid)
 
         if not entity:
-            """Здесь будет raise ошибки not found"""
+            raise NotFoundError(self.name, uid)
 
         db_session.delete(entity)
         db_session.commit()
@@ -112,9 +116,10 @@ class WebStorage():
         entity = Siren.query.get(uid)
 
         if not entity:
-            """Здесь будет raise ошибки not found"""
+            raise NotFoundError(self.name, uid)
 
         return SirenSchema(
+                uid=entity.uid,
                 name=entity.name,
                 district_id=entity.district_id,
                 type=entity.type,
@@ -138,7 +143,7 @@ class WebStorage():
         district = District.query.get(uid)
 
         if not district:
-            """Здесь будет raise ошибки not found"""
+            raise NotFoundError(self.name, uid)
 
         all_sirens = []
 
@@ -146,6 +151,7 @@ class WebStorage():
 
         for entity in entities:
             siren = SirenSchema(
+                uid=entity.uid,
                 name=entity.name,
                 district_id=entity.district_id,
                 type=entity.type,
@@ -177,6 +183,7 @@ class WebStorage():
 
         for entity in entities:
             siren = SirenSchema(
+                uid=entity.uid,
                 name=entity.name,
                 district_id=entity.district_id,
                 type=entity.type,

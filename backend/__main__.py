@@ -5,10 +5,13 @@ from pydantic import ValidationError
 
 from backend.database import db_session
 from backend.disticts.views import district_view
+from backend.sirens.views import siren_view
+from backend.errors import AppError
 
 
 app = Flask(__name__)
 app.register_blueprint(district_view, url_prefix='/api/districts')
+app.register_blueprint(siren_view, url_prefix='/api/sirens')
 
 
 logging.basicConfig(level=logging.INFO)
@@ -23,6 +26,11 @@ def handle_validation_error(err: ValidationError):
     return {'error': str(err)}, 400
 
 
+def handle_app_error(err: AppError):
+    return {'error': str(err)}, err.code
+
+
+app.register_error_handler(AppError, handle_app_error)
 app.register_error_handler(ValidationError, handle_validation_error)
 app.teardown_appcontext(shutdown_session)
 
