@@ -2,6 +2,7 @@ from flask import Blueprint, request
 
 from backend.disticts.schemas import District
 from backend.disticts.storage import WebStorage
+from backend.errors import AppError
 
 
 district_view = Blueprint('districts', __name__)
@@ -13,14 +14,14 @@ def add():
     payload = request.json
 
     if not payload:
-        """здесь будет raise ошибки empty payload"""
+        raise AppError('empty payload')
 
-        payload['uid'] = -1
+    payload['uid'] = -1
 
-        district = District(**payload)
-        district = storage.add(district)
+    district = District(**payload)
+    district = storage.add(district)
 
-        return district.dict(), 201
+    return district.dict(), 201
 
 
 @district_view.get('/<int:uid>')
@@ -42,7 +43,7 @@ def update_by_id(uid):
     payload = request.json
 
     if not payload:
-        """здесь будет raise ошибки empty payload"""
+        raise('empty payload')
 
     payload['uid'] = uid
     district = District(**payload)
