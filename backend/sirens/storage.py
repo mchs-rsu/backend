@@ -205,3 +205,38 @@ class WebStorage():
             sirens_by_name.append(siren)
 
         return sirens_by_name
+
+
+    def find_for_district(self, uid: int, name: str) -> list[SirenSchema]:
+        search = '%{name}%'.format(name=name)
+        entities = Siren.query.filter(
+            Siren.district_id == uid,
+            Siren.name.ilike(search),
+        ).all()
+
+        target_sirens = []
+
+        for entity in entities:
+            siren = SirenSchema(
+                uid=entity.uid,
+                name=entity.name,
+                district_id=entity.district_id,
+                type=entity.type,
+                own=entity.own,
+                engineer=entity.engineer,
+                date=entity.date,
+                condition=entity.condition,
+                ident=entity.ident,
+                ip=entity.ip,
+                mask=entity.mask,
+                gateway=entity.gateway,
+                adress=entity.adress,
+                geo=entity.geo,
+                comment=entity.comment,
+                photo=entity.photo,
+                disabled=entity.disabled,
+            )
+
+            target_sirens.append(siren)
+
+        return target_sirens

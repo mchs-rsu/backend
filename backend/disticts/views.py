@@ -3,10 +3,13 @@ from flask import Blueprint, request
 from backend.disticts.schemas import District
 from backend.disticts.storage import WebStorage
 from backend.errors import AppError
+from backend.sirens.storage import WebStorage as SirenStorage
 
 
 district_view = Blueprint('districts', __name__)
+
 storage = WebStorage()
+siren_storage = SirenStorage()
 
 
 @district_view.post('/')
@@ -61,3 +64,14 @@ def get_all(name=''):
         districts = storage.get_all()
 
     return [district.dict() for district in districts], 200
+
+
+@district_view.get('/<int:uid>/sirens')
+def get_all_sirens(uid, name=''):
+    if 'name' in request.args:
+        name = request.args.get('name')
+        sirens = siren_storage.find_for_district(uid, name)
+    else:
+        sirens = siren_storage.get_for_district(uid)
+
+    return [siren.dict() for siren in sirens], 200
