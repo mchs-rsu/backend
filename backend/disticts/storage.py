@@ -62,12 +62,13 @@ class WebStorage():
 
 
     def get_by_name(self, name: str) -> list[DistrictSchema]:
-        search = '%name%'.format(name=name)
+        search = '%{name}%'.format(name=name)
         entities = District.query.filter(District.name.ilike(search)).all()
 
         all_districts = []
 
         for entity in entities:
             district = DistrictSchema(uid=entity.uid, name=entity.name)
+            all_districts.append(district)
 
         return all_districts
