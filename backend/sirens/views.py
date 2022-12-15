@@ -55,7 +55,7 @@ def delete_by_id(uid):
 
 @siren_view.get('/')
 def get_by_name(name=''):
-    if 'name ' in request.args:
+    if 'name' in request.args:
         name = request.args.get('name')
         sirens = storage.get_by_name(name)
     else:
